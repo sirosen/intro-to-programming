@@ -1,0 +1,263 @@
+%!TEX root = main.tex
+
+\titlebox{Part 3: Beginning Abstraction}
+
+Thusfar, everything we have done has been relatively unexciting.
+We have used the Python Interpreter purely as a calculator, and though it can do amazing computations like $2^{15000}$ very fast, it isn't offering us much more than a TI-84 would.
+I would argue that building abstractions on top of one another is the core of programming as a technical skill, and has a central role in broader computer science as well.
+
+We will begin by looking at variables, which are just named values, and move on to some simple functions.
+The first functions that we will deal with are of the same ilk as ``f(x) = 2x'' and other simple curves from algebra, but we will very quickly see that functions can be much more expressive than that.
+Understanding good abstractions is a fundamental skill that takes time, so don't rush, and try not to get frustrated if you find anything difficult to understand.
+
+\subtitlebox{Variables}
+
+A variable is just a named container.
+There is an important distinction between programatic variables and algebraic ones.
+When we deal with a variable, $x$, in algebra, it has only one fixed value.
+We would say that $x=2$ and $x=3$ are inconsistent statements about the value of $x$.
+By contrast, when we are programming, $x$ is just a name whose value might change over time.
+So $x$ only has a value at a specific point in time, not one fixed value throughout its lifetime, and we assign different values to $x$ over the course of our interaction with it.
+
+It may help to think about variables a bit like files in your computer's filesystem.
+If you have ``Essay.doc'' on your Desktop, it is a file with only one possible given set of contents at a time, but you can replace it with a new, distinct document, with the same name.
+If you replace it by saving a new file, also named ``Essay.doc'' to the same location, however, the original contents will not be recoverable.
+This is a case of learn by doing, so, as you read the examples in this section, be sure to try a few things out yourself to see if you understand.
+
+\begin{itemize}
+    \item Let's start by creating some variables in the interpreter.
+        This should feel pretty intuitive.
+        We assign values to variables, and create new variables, using the equals sign.
+\begin{codeblock}
+>>> x = 5
+>>> x+1
+6
+>>> y=x/2.0
+>>> y
+2.5
+>>> x = 4
+>>> x
+4
+>>> y
+2.5
+\end{codeblock}
+    \item Notice that \code{y}'s value did not change when \code{x}'s value did, even though we defined \code{y} in terms of \code{x}.
+        This is because \code{y} was defined by evaluating \texttt{x/2.0}, with the value of \code{x} at that point in time.
+        After the assignment, \code{y} \textit{does not retain any knowledge of how it was defined}, it's just a container with the value \code{2.5} inside.
+    \item Variable assignment is always written with a variable name on the left and a value on the right.
+        Can you imagine why this is?
+        What would the values of \code{x} and \code{y} be in the above example, if we followed it with the line \code{>>> x = y}?
+        Try it and find out.
+\end{itemize}
+
+Ultimately, we are going to use variables to describe problems that we want to solve.
+If you have the ages of two people, Bob and Alice, and want to find their average age, you might think of this as
+$$\frac{Age_{Bob} + Age_{Alice}}{2}$$
+We would like our programs to be able to express this same idea, and as we will see, variables do precisely that.
+
+\begin{itemize}
+    \item Let's start by expressing the average age of Alice and Bob in python.
+\begin{codeblock}
+>>> AgeBob = 32
+>>> AgeAlice = 35
+>>> (AgeBob+AgeAlice)/2
+33.5
+\end{codeblock}
+    \item By writing down the expression in this way, we have allowed for the ages of Bob and Alice to be set arbitrarily, while still computing the correct value.
+        In the present case, this may seem unnecessary, but we can easily describe systems for which ensuring correctness is not necessarily trivial.
+        Consider the following scenario in which we use Newtonian laws to describe a rolling disc.
+\begin{codeblock}
+>>> acceleration = 5
+>>> time = 20
+>>> velocity = acceleration*time
+>>> mass = 350
+>>> force = acceleration*mass
+>>> radius = 2
+>>> torque = force*radius
+>>> displacement = (1/2)*acceleration*time**2
+>>> angularVelocity = velocity*radius
+>>> moment = (1/2)*mass*radius**2
+>>> energy = (1/2)*mass*velocity**2 + (1/2)*moment*angularVelocity**2
+\end{codeblock}
+    \item We can easily see that we have computed numerous values, displacement, angular velocity, and torque to name a few, which depend upon the values of acceleration and time.
+        Without describing these as variables, and thereby encapsulating the operations by which we produced them, the computation for energy would be hard to read and understand:
+        \code{(1/2)*350*(5*20)**2 + (1/2)*((1/2)*350*2**2)*(5*20*2)**2}
+    \item Perhaps more importantly, if we do not record the value of \code{velocity}, then we must recompute it each time we use it.
+        Not only is computational time we would like to save the computer (imagine that we are asking for values that take the computer much longer than simple multiplication), but it means trouble if I realize that I want to write \code{revolutions = displacement/(2*3.1415*radius)}.
+        Without variables, I must think about a value, \code{displacement}, in terms of time and acceleration, and more than that, I must have the actual values of time and acceleration in mind when I write the arithmetic expression down.
+    \item Remember, however, that if \code{acceleration} or \code{time} change, we must recompute all of the other values.
+        They have no idea of how they were computed.
+        To describe computations, rather than raw values, we will have to discuss functions\ldots
+\end{itemize}
+
+\subtitlebox{Simple Functions and the Math Library}
+
+We will begin by considering a few functions which Python provides for us.
+To gain access to Python's Math Library, we need to \code{import math}.
+We say that \code{math} is a Library because it is a repository of values and functions, and importing is the process by which we make an existing body of code available for our use.
+Think of \code{math} as a long list of definitions like \code{pi = 3.1415\ldots}
+By importing \code{math}, we just evaluate a long series of these definitions, so that we can use them.
+
+\begin{itemize}
+    \item Accessing values from the Math Library is simple, but requires that we use the ``Dot Syntax'', a notation that allows us to specify where a variable comes from.
+        Observe:
+\begin{codeblock}
+>>> import math
+>>> math.pi
+3.141592653589793
+>>> math.e
+2.718281828459045
+>>> radius=10
+>>> area = math.pi*radius**2
+\end{codeblock}
+    \item The dot can be thought of as a kind of locational specifier, much like sections, subsections, and subsubsections of a large contract or similar document.
+        \code{A.B} refers to a variable $B$ in some container, $A$.
+        \begin{itemize}
+            \item If $B$ itself contains variables, we might right \code{A.B.C} to refer to one of these.
+            \item Dot notation shows up in a few other contexts, but always with this same general meaning of \code{X.Y}:
+                ``\code{X} is some characteristic or attribute of \code{Y}''
+        \end{itemize}
+    \item Constants like these are really just variables, and python will even let us modify them.
+        If we write \code{math.pi = 4}, we will really overwrite the value for $\pi$.
+        The easiest way to fix this if you do it is to exit and reopen python, but we will revisit this issue later with a better solution.
+\end{itemize}
+
+We are not presently interested in the constants provided by \code{math}, but rather the functions it includes.
+You can find a full listing of these \href{http://docs.python.org/2/library/math.html}{in the official Python documentation} if you are curious, but we will inspect a few of interest, and introduce some basic vocabulary for programatic functions.
+
+\begin{itemize}
+    \item If we have a python function named \code{f}, and write \code{y = f(x)}, then we say that \code{x} is an \emph{argument} to \code{f}, and that \code{y} is a variable containing the \emph{return} value of \code{f}, or that \code{f} \emph{returns} \code{y}.
+        Although these specific terms may not matter for us now, they are common parlance.
+        Not only will they allow you to read official Python documentation, but they are also how I will describe functions as we work with them.
+    \item Let's start with the square root function, named \code{sqrt}.
+        Functions behave much as they do in algebra, so we can think of \code{sqrt} as $sqrt(x) = y$, where $y$ is the square root of $x$.
+        \code{sqrt} takes a real number as an argument, and returns its square root.
+\begin{codeblock}
+>>> import math
+>>> math.sqrt(100)
+10.0
+>>> math.sqrt(5)
+2.23606797749979
+\end{codeblock}
+    \item As a quick aside, can you guess why \code{math.sqrt(100)} produces \code{10.0} instead of \code{10}?
+        Even though we imported true division, Python still distinguishes integers from real numbers, called ``floats'' in reference to \href{http://en.wikipedia.org/wiki/IEEE\%5Ffloating\%5Fpoint}{the IEEE Floating Point standard}.
+\end{itemize}
+
+We will not define our own functions just yet, but first get comfortable with the functions we have available, and what we want to describe.
+\code{math} defines trigonometric fuctions much as we would expect, so that \code{math.cos(2*math.pi)} is \code{1.0}, along with inverse trig functions, exponential functions, and an array of tools which we will not discuss.
+
+\begin{itemize}
+    \item Let's take a look at the \code{math.pow} function.
+        \code{math.pow} takes two arguments, and computes the same thing that the \code{**} operator does.
+\begin{codeblock}
+>>> import math
+>>> math.pow(2,3)
+8.0
+>>> math.pow(3,2)
+9.0
+\end{codeblock}
+    \item Although \code{math.pow} does not provide us with new functionality, it introduces a few things which we will find very useful.
+        \begin{enumerate}
+            \item Functions can take multiple arguments.
+                Just as we might define a mathematical function in three dimensions by $f(x,y) = x+y$, \code{math.pow} operates on more than one parameter.
+                In fact, a function can operate on any fixed number of arguments, and even, if we pull some tricks, an arbitrary, unknown number of arguments.
+            \item The order of arguments matters.
+                Giving a function the pair $(x,y)$ is different from the pair $(y,x)$.
+                Sometimes this will matter, if we are doing a computation like $f(a,b) = a - b$, and sometimes it will not: $f(a,b) = a+b$.
+            \item Function arguments are comma separated lists.
+                This may seem obvious, and it is the modern convention across programming languages, but it is good to confirm.
+        \end{enumerate}
+    \item Thinking about the model set by \code{math.pow}, let us consider the problem we set ourselves earlier, averaging the ages of Bob and Alice.
+        \begin{itemize}
+            \item We are not so much concerned with what we are averaging, but more with the problem of averaging two numbers.
+                From now on, let us talk about the problem as one of averaging two numbers.
+            \item The function should take two numbers as parameters, and return their average.
+            \item Averaging numbers is commutative, so it should not matter which order we give the numbers in.
+            \item We know that the function needs to compute and return one half of the sum of its arguments.
+            \item It probably makes sense to give the function a name like ``avg'', so a \emph{call} to it -- also sometimes called an \emph{invocation} of the function -- should look like \code{avg(AgeBob,AgeAlice)}.
+        \end{itemize}
+\end{itemize}
+
+We now have a really good idea of what the \code{avg} function should look like, but no clear idea of how to write it.
+We will return to \code{avg}, but first we are going to write out a much simpler function, \code{double}.
+\code{double} will simply return twice the value of its only argument, so in standard algebraic notation $double(x) = 2x$.
+
+\begin{itemize}
+    \item As we write out \code{double}'s definition, there are a few particulars worth paying attention to.
+        \begin{itemize}
+            \item \keyword{def} is a keyword.
+                This means that it is a word with special behavior.
+                In the case of \keyword{def}, we read what follows as a function definition.
+            \item The colon symbol and indentation are syntactically significant.
+                A colon indicates the beginning of a \emph{block}, a series of expressions that should be treated as one unit.
+                Functions are just one case in which blocks are important, but in this context, the block consists of the expressions which are evaluated each time that the function is executed.
+            \item Lines in a block following a colon must be indented.
+                There are a lot of different rules that different people follow for exactly how the indentation should look, but Python requires that all lines in a block are indented the exact same amount.
+                My personal preference for Python is to indent with four spaces, but most people find the tab character more convenient (just hit ``Tab'' to insert a tab character).
+            \item The \keyword{return} specifies the value that the function \emph{returns} or produces.
+                It must appear in the form
+\begin{codeblock}
+\keyword{return} value
+\end{codeblock}
+%                \code{\keyword{return} value}\\
+                where \code{value} is whatever we want the result of evaluating the function to be.
+            \item The \emph{arguments} or \emph{parameters} to the function are written, with its name, in a comma separated list, enclosed in parentheses.
+                This is the same convention that we follow when defining algebraic functions, and, as in that case, this is where we give names to the variables that we will use inside of the function's definition.
+        \end{itemize}
+    \item Here follows the definition of \code{double}
+\begin{codeblock}
+>>> \keyword{def} double(x):
+...     \keyword{return} 2*x
+...
+>>> double(4)
+8
+\end{codeblock}
+    \item Note that the interpreter converts the standard prompt ``\pyprompt'' to an ellipsis ``\code{...}'' while we are writing a block.
+        This is the interpreter's way of indicating to us that we are still inside of a block.
+        When we define our functions inside of files, symbols like the prompt and ellipsis will be absent, and we will not be required to write them in -- in fact, doing so would cause errors in the evaluation of those function definitions.
+    \item We enter a newline without any content, the ``Return'' or ``Enter'' key, in order to end a block in the interpreter.
+        That is why there is a gap between the definition of \code{double} above, and the \emph{invocation} of it, or \emph{call} to it, on the value \code{4}.
+\end{itemize}
+
+To recap, defining \code{double} has shown us the \keyword{def} keyword and the syntax it expects, the notion of blocks and their syntactic form in terms of colons and indentation, and the use of the \keyword{return} keyword to specify the value given by a function call.
+We also began using the terms \emph{call} and \emph{invocation} to refer to uses of a function, and \emph{arguments} or \emph{parameters} to refer to the variables appearing within a function definition and supplied when it is called.
+
+Before we proceed directly to \code{avg}, our function which finds the average of two values, we will write out the similar and related functions \code{plus} and \code{minus} a few different ways.
+You may already be ready to write \code{avg} at this point, but the following examples should still prove instructive.
+\begin{itemize}
+    \item The definition of \code{plus}:
+\begin{codeblock}
+>>> \keyword{def} plus(alpha,beta):
+...     \keyword{return} alpha + beta
+\end{codeblock}
+    \item The definition above may seem intuitive, but consider the following invocations of it.
+\begin{codeblock}
+>>> x = 1
+>>> plus(x,x)
+2
+>>> plus(double(x),x)
+3
+>>> x = plus(x,x)
+>>> x
+2
+>>> x = plus(plus(x,double(x)),1)
+\end{codeblock}
+    \item Work out, as an exercise, the final value of \code{x}.
+        It may help to keep in mind that function invocation behaves much the same way as algebraic function evaluation, so you can evaluate this expression much as you would evaluate nested function applications $f(g(h(x)))$.
+    \item An alternative definition of \code{plus}:
+\begin{codeblock}
+>>> \keyword{def} plus(alpha,beta):
+...     x = alpha + beta
+...     \keyword{return} x
+\end{codeblock}
+    \item Two similar definitions for \code{minus}:
+\begin{codeblock}
+>>> \keyword{def} minus(alpha,beta):
+...     x = alpha - beta
+...     \keyword{return} x
+...
+>>> \keyword{def} minus2(alpha,beta):
+...     \keyword{return} alpha - beta
+...
+\end{codeblock}
+\end{itemize}

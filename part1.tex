@@ -1,0 +1,46 @@
+%!TEX root = main.tex
+
+\titlebox{Part 1: Getting Set-Up}
+
+\subtitlebox{Find the Terminal}
+Go to Spotlight Search or Applications and find the Terminal app.
+Many people prefer the freely available iTerm app, but both will behave the same for our purposes.
+Once you have launched the terminal, you will be presented with a command prompt, which is a simple text entry field.
+You can now type commands into the terminal, such as \texttt{ls} to list the contents of the current working directory.
+Do not worry too much about using the terminal -- we will revisit the commands available there later on.
+
+\subtitlebox{Make Sure Python is Installed}
+Type \texttt{python} into the command prompt (the terminal's text field), and hit Return.
+You should be presented with something like this:
+\begin{codeblock}
+Python 2.7.3 (default, Aug  1 2012, 05:14:39)
+[GCC 4.6.3] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>>
+\end{codeblock}
+Don't worry too much about the specifics. The important part is that this program, the Python interpreter, launches.
+You will notice that you no longer have the terminal's command prompt. Instead, you have the new prompt \pyprompt. We will call this the ``python prompt'' or the ``interpreter'', and a few other names. They all refer to the \pyprompt text field.
+If python does not launch, your system is probably in some kind of trouble. You can install it from \href{http://www.python.org/getit/mac/}{Python.org}.
+
+\subtitlebox{Exit the Interpreter, and Quit Terminal}
+Let's make sure we're comfortable with launching python.
+\begin{itemize}
+    \item Hit ``Ctrl-D'' or enter \texttt{exit()} to exit the python interpreter.
+    \begin{itemize}
+        \item Ctrl-D is the ``EOF'' or ``End of File'' character, a special character which indicates the end of a file.
+        \begin{itemize}
+            \item Python interprets the EOF as a signal to exit.
+        \end{itemize}
+    \item \texttt{exit()} is a ``function call''. Essentially, it is the name of some piece of code which we would like to run.
+        \begin{itemize}
+            \item Python evaluates \texttt{exit()}, which involves running the function named \texttt{exit}, which exits the interpreter
+            \item For now, you can think of \texttt{exit()} as being a magical command that exits the interpreter. We will talk in depth about functions soon
+        \end{itemize}
+    \end{itemize}
+    \item Quit Terminal just like any application. Command+Q, or the menu
+    \begin{itemize}
+        \item If we had not closed the interpreter before quitting, Terminal may have complained that a program was still being run by the Terminal
+    \end{itemize}
+\end{itemize}
+
+

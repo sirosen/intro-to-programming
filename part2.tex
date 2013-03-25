@@ -1,0 +1,84 @@
+%!TEX root = main.tex
+
+\titlebox{Part 2: Python as a Calculator}
+
+\subtitlebox{Reopen Python}
+Open python as before, let's start computing some things with it.
+
+\subtitlebox{Arithmetic}
+\begin{itemize}
+    \item Although python is a fully fledged language, for the moment we're just going to use it to perform simple calculations
+    \item Try typing some simple arithmetic expressions into the interpreter, it should evaluate them. For example:
+\begin{codeblock}
+>>> 2 + 2
+4
+>>> (2+3)*4
+20
+>>> 4*8-2
+30
+>>> 2**3
+8
+\end{codeblock}
+    \item As in mathematics, we call \code{+}, \code{-}, \code{*}, and \code{/} operators. They are binary operations with specific precedence rules, etc.
+        The only tricky business is the \code{**} operator, which python uses for exponentiation.
+    \item Likewise, parentheses can be used to group operators and their operands
+    \item Mysterious Behavior
+    \begin{itemize}
+        \item What's going on here? You can play in the interpreter to find out, or read on.
+\begin{codeblock}
+>>> 1/2
+0
+>>> 3/2
+1
+>>> 2/3
+0
+\end{codeblock}
+    \end{itemize}
+    \item Python doesn't divide correctly! How can we fix this?
+    \begin{itemize}
+        \item The issue is not quite that the division is incorrect.
+            Python is performing Integer Division, trying to keep us in the realm of integers.
+            Although Integer Division seems like a terrible thing, it is actually quite useful behavior in many programs.
+            Oftentimes, programs use integers as indices into sequences of elements, so non-integer values are meaningless.
+            Integer division makes it easier to check the correctness of these programs.
+            The modern stance, however, is that programmers should specify when they want integer division.
+        \item Notice that integer division truncates, it does not round.
+            For example, \code{2/3} is \code{0}, not \code{1}.
+            Truncation is a simple operation to do by hand: simply discard the non-integer component of the quotient.
+        \item Python identifies real values as being distinct from integers, so \code{2.0/4.0} will evaluate to \code{0.5}, as it should.
+    \end{itemize}
+    \item Okay, so Integer Division is a sometimes-useful thing, how do I do real division?
+    \begin{itemize}
+        \item For now, we are going to enter a very specific command which fixes the behavior of division.
+            \code{from \_\_future\_\_ import division} is a special statement which should be read as ``use the version of division which will be the default in the future''.
+            In python versions earlier than 3.0, division works as we have described, but in python 3.x, we will have true division.
+            This statement allows us to use true division without running python 3.0 or later.
+\begin{codeblock}
+>>> 1.0/2
+0.5
+>>> 1/2
+0
+>>> from __future__ import division
+>>> 1/2
+0.5
+\end{codeblock}
+        \item After we have imported true division, things work as we would like.
+            If we want the older style, integer division, we use the \texttt{//} operator, so\ldots
+\begin{codeblock}
+>>> 1//2
+0
+\end{codeblock}
+        \item Try to predict the results before typing in these expressions
+        \begin{itemize}
+            \item \code{1+2.0}
+            \item \code{3.0/4.0}
+            \item \code{6.2/3.1 ** 1}
+            \item \code{1.0 * 2**0.5}
+            \item \code{1.0/3.0 + 1.0/3.0 + 1.0/3.0}
+            \item \code{3//2}
+        \end{itemize}
+    \end{itemize}
+    \item We will always assume, from this point forward, that we are using true division.
+        Make sure that you run \code{from \_\_future\_\_ import division} each time that you start python.
+        When python 3.x rolls around, this statement will no longer be necessary, but for now it is.
+\end{itemize}

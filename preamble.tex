@@ -1,0 +1,74 @@
+%!TEX root = main.tex
+
+%-----------------------%
+% Author: Stephen Rosen %
+%-----------------------%
+
+\documentclass[letterpaper,11pt]{article}
+
+%-----------------------
+\usepackage{amsmath,xcolor,enumitem,fancyvrb}
+\pagestyle{empty}
+\usepackage[margin=0.5in]{geometry}
+
+\raggedright
+\setlength{\tabcolsep}{0in}
+%-----------------------
+
+%Hyperlink Setup
+\usepackage[pdftex]{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=red
+}
+
+%-----------------------
+
+%Command definitions
+
+\newcommand{\boxwidth}{0.97\textwidth}
+\definecolor{black}{rgb}{0,0,0}
+\definecolor{white}{rgb}{1,1,1}
+\definecolor{lightgray}{rgb}{.9,.9,.9}
+\definecolor{skyblue}{rgb}{.9,1,.9}
+\definecolor{codeborder}{rgb}{0.5,0.5,0.5}
+\definecolor{keyword}{rgb}{0.3,0.8,0.8}
+
+\newcommand{\titlebox}[1]{
+    \Large{
+        \fcolorbox{black}{lightgray}{
+            \parbox{\boxwidth}{ #1 }
+        }
+    }
+    \nopagebreak
+}
+
+\newcommand{\subtitlebox}[1]{
+    \large{
+        \vspace{0.5em}
+        \fcolorbox{black}{skyblue}{
+            #1
+        }\\
+        \vspace{0.5em}
+    }
+    \nopagebreak
+}
+
+\newcommand{\code}[1]{\texttt{#1}} 
+\newcommand{\keyword}[1]{\texttt{\textcolor{keyword}{#1}}}
+\newcommand{\pyprompt}{ \code{>>>} }
+
+\newenvironment{codeblock}{
+    \newline
+    \nopagebreak
+    \VerbatimEnvironment
+    \begin{minipage}{0.85\textwidth}
+    \begin{Verbatim}[frame=single,commandchars=\\\{\}]%
+}{
+    \end{Verbatim}
+    \end{minipage}
+    \newline
+}
