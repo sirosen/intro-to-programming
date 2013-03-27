@@ -261,3 +261,21 @@ You may already be ready to write \code{avg} at this point, but the following ex
 ...
 \end{codeblock}
 \end{itemize}
+
+Like variables, functions are a way of storing a computation so that we can use it later.
+We can write \code{avgofxandy = (x + y) / 2}, but this only defines a very specific average for us to use.
+If we want to define our general formula for the average of two values, we will want to write it as a function, and then we can say that \code{avgofxandy = avg(x,y)}.
+We want to effectively give the task or work -- ``the computation'' -- of averaging values a name, and refer to it by that name, \code{avg}.
+
+To write \code{avg}, we will take two arguments, which we will call \code{x} and \code{y}, sum them and divide by two.
+Importantly, our work is not done: we need to return the result.
+If we fail to do so, our function \code{avg} will compute the average, but not hand it back to us to use.
+This behavior may be unintuitive now, but the distinction between computed values and returned values becomes important when we demand more from our functions.
+Consider the following definition of \code{avg}:
+\begin{codeblock}
+>>> \keyword{def} avg(x,y):
+...     total = x + y
+...     average = total / 2
+...     \keyword{return} average
+...
+\end{codeblock}
